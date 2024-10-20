@@ -23,12 +23,15 @@ class WebScrapingApp:
             return
         try:
             response = requests.get(url)
-            soup = BeautifulSoup(response.content, 'html.parser')
-            # Aquí puedes agregar la lógica para extraer los datos que deseas
-            # Por ejemplo, para extraer todos los enlaces de la página:
-            links = [a['href'] for a in soup.find_all('a', href=True)]
+            soup = BeautifulSoup(response.content, "html.parser")
+            productos = soup.find_all("div", class_="ui-search-result__wrapper")
+            resultados = []
+            for producto in productos:
+                titulo = producto.find("h2", class_="poly-box poly-component__title").text.strip()
+                precio = producto.find("span", class_="andes-money-amount").text.strip()
+                resultados.append(f"Título: {titulo} - Precio: {precio}")
             self.result_text.delete(1.0, tk.END)
-            self.result_text.insert(tk.END, "\n".join(links))
+            self.result_text.insert(tk.END, "\n".join(resultados))
         except requests.exceptions.RequestException as e:
             messagebox.showerror("Error", str(e))
 
@@ -36,3 +39,9 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = WebScrapingApp(root)
     root.mainloop()
+
+   
+ #https://listado.mercadolibre.com.co/computadores#D[A:computadores]
+   
+    
+
